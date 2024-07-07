@@ -21,7 +21,6 @@ export default function Signup() {
             setLoading(true);
             setErr(null);
             const response = axios.post('http://localhost:3001/api/auth/signup', info)
-            console.log(response.data)
             setLoading(false)
             navigate('/sign-in')
         }
