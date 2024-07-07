@@ -2,11 +2,15 @@ const express = require("express")
 const mongooese = require("mongoose")
 const userRoutes = require("./routes/user.route")
 const authRoutes = require("./routes/auth.route")
+const cors = require("cors")
 
 mongooese.connect("mongodb+srv://kidusm3l:1055967317@mernblog.0xlxsox.mongodb.net/").then(()=> {
     console.log("Database connected")
 })
+
+
 const app = express()
+app.use(cors())
 
 app.use(express.json())
 const port = 3001
