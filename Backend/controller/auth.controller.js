@@ -29,17 +29,20 @@ const signin = async (req, res) => {
     const {username, password} = req.body;
     if (!username || !password || username === '' || password === '') {
         console.log("all fields are required")
+        res.json({message:"All fields are required"})
         return
     }
     try {
         const validUser = await User.findOne({username});
         if (!validUser) {
             console.log("User not found")
+            res.json()
             return
         }
         const validPwd = bcrypt.compareSync(password, validUser.password)
         if (!validPwd) {
             console.log("invalid Credentials")
+            res.json()
             return
         }
 
