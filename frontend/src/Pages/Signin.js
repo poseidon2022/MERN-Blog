@@ -2,11 +2,13 @@ import {Label, TextInput, Button, Alert, Spinner} from "flowbite-react"
 import {Link, useNavigate} from "react-router-dom"
 import {useState} from "react"
 import axios from 'axios'
+import { signInStart, signInFailure, signInSuccess } from "../redux/user/userSlice"
+import {useDispatch, useSelector} from 'react-redux'
 export default function SignIn() {
 
     const [info, setInfo] = useState({"username":"", "password":""})
-    const [err, setErr] = useState(null);
-    const [loading, setLoading] = useState(false);
+    const {loading, error:err} = useSelector(state => state.user)
+    const dispatch = useDispatch();
     const navigate = useNavigate()
     function handleChange(e) {
         setInfo((prev) => ({...prev,[e.target.id]:e.target.value.trim()}))
@@ -15,25 +17,23 @@ export default function SignIn() {
     async function handleSubmit(e) {
         e.preventDefault()
         if (!info.username || !info.password) {
-            return setErr("Please fillout all fields")
+            return dispatch(signInFailure("Please fill all the required fields"))
         }
         try {
-            setLoading(true);
-            setErr(null);
+            dispatch(signInStart)
             const response = await axios.post('http://localhost:3001/api/auth/signin', info)
             console.log(response.data)
-            setLoading(false)
             if (response.data) {
+                dispatch(signInSuccess(response.data));
                 navigate('/')
             }
             else {
-                return setErr("Please Enter Valid Credentials")
+                return dispatch(signInFailure("Please enter valid credentials"))
             }
         }
         catch(error) {
             console.log("Sign in not successful")
-            console.log(error)
-            setLoading(false);
+            dispatch(signInFailure(error.message))
         }
     }
 
